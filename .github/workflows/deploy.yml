@@ -1,0 +1,26 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - dpan
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy via Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          # Inject secrets as Worker environment variables
+          secrets: |
+            ADMIN
+        env:
+          ADMIN: ${{ secrets.ADMIN_PASSWORD }}
